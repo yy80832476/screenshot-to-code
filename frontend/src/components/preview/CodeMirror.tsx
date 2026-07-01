@@ -32,7 +32,7 @@ function CodeMirror({ code, editorTheme, onCodeChange }: Props) {
             indentWithTab,
             { key: "Mod-z", run: undo, preventDefault: true },
             { key: "Mod-Shift-z", run: redo, preventDefault: true },
-          ]),
+          ] as any),
           lineNumbers(),
           bracketMatching(),
           html(),
