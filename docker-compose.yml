@@ -26,5 +26,5 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_HTTP_BACKEND_URL=http://192.168.163.132:7001
-      - VITE_WS_BACKEND_URL=ws://192.168.163.132:7001
+      - VITE_HTTP_BACKEND_URL=${VITE_HTTP_BACKEND_URL}
+      - VITE_WS_BACKEND_URL=${VITE_WS_BACKEND_URL}
