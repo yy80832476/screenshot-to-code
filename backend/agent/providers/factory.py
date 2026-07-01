@@ -2,6 +2,7 @@ from typing import Optional
 
 from anthropic import AsyncAnthropic
 from google import genai
+from google.genai import types
 from openai import AsyncOpenAI
 from openai.types.chat import ChatCompletionMessageParam
 
@@ -10,7 +11,12 @@ from agent.providers.base import ProviderSession
 from agent.providers.gemini import GeminiProviderSession, serialize_gemini_tools
 from agent.providers.openai import OpenAIProviderSession, serialize_openai_tools
 from agent.tools import canonical_tool_definitions
-from config import REPLICATE_API_KEY
+from config import (
+    REPLICATE_API_KEY,
+    OPENAI_BASE_URL,
+    ANTHROPIC_BASE_URL,
+    GEMINI_BASE_URL,
+)
 from llm import ANTHROPIC_MODELS, GEMINI_MODELS, OPENAI_MODELS, Llm
 from preview_screenshot import is_screenshot_preview_available
 
@@ -39,7 +45,7 @@ def create_provider_session(
         if not openai_api_key:
             raise Exception("OpenAI API key is missing.")
 
-        client = AsyncOpenAI(api_key=openai_api_key, base_url=openai_base_url)
+        client = AsyncOpenAI(api_key=openai_api_key, base_url=openai_base_url or OPENAI_BASE_URL)
         return OpenAIProviderSession(
             client=client,
             model=model,
@@ -51,7 +57,7 @@ def create_provider_session(
         if not anthropic_api_key:
             raise Exception("Anthropic API key is missing.")
 
-        client = AsyncAnthropic(api_key=anthropic_api_key)
+        client = AsyncAnthropic(api_key=anthropic_api_key, base_url=ANTHROPIC_BASE_URL)
         return AnthropicProviderSession(
             client=client,
             model=model,
@@ -63,7 +69,10 @@ def create_provider_session(
         if not gemini_api_key:
             raise Exception("Gemini API key is missing.")
 
-        client = genai.Client(api_key=gemini_api_key)
+        client = genai.Client(
+            api_key=gemini_api_key,
+            http_options=types.HttpOptions(base_url=GEMINI_BASE_URL),
+        )
         return GeminiProviderSession(
             client=client,
             model=model,

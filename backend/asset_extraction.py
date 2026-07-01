@@ -8,6 +8,7 @@ from typing import Any, Dict, List, cast
 from google import genai
 from google.genai import types
 from PIL import Image
+from config import GEMINI_BASE_URL
 
 
 ASSET_EXTRACTION_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -163,7 +164,10 @@ async def extract_assets_from_images(
             "error": "No valid input images were available for asset extraction.",
         }
 
-    client = genai.Client(api_key=gemini_api_key)
+    client = genai.Client(
+        api_key=gemini_api_key,
+        http_options=types.HttpOptions(base_url=GEMINI_BASE_URL),
+    )
     assets: List[Dict[str, Any]] = []
 
     for description in asset_descriptions:
